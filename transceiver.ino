@@ -54,6 +54,20 @@ void setup()
 
 void loop()
 {
+  if (rf95.available()) {
+    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+    uint8_t len = sizeof(buf);
+    
+    if (rf95.recv(buf, &len)) {
+      String received = (char*)buf;
+      
+      // Если получена команда reset
+      if (received.equals("reset")) {
+        count = 0;
+        Serial.println("Counter reset via radio command");
+      }
+    }
+  }
   // Проверка наличия доступных данных в последовательном порте
   if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n'); // Чтение команды до новой строки
@@ -92,6 +106,9 @@ void loop()
     delay(100);
   }
   
+  // Небольшая задержка между измерениями
+  delay(50);
+}
   // Небольшая задержка между измерениями
   delay(50);
 }
