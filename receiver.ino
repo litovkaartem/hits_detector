@@ -6,19 +6,24 @@
 #define RFM95_INT 2
 
 #define LED 13
-#define RF95_FREQ 434.0
+#define RF95_FREQ 434.0  
 
+// Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
+
+unsigned long lastResetTime = 0;
+const unsigned long resetInterval = 30000; // 30 секунд в миллисекундах
 
 void setup() 
 {
   pinMode(RFM95_RST, OUTPUT);
   digitalWrite(RFM95_RST, HIGH);
+  pinMode(LED, OUTPUT);
   
-  Serial.begin(115200); // Увеличиваем скорость для Orange Pi
+  Serial.begin(9600);
   delay(100);
 
-  // Ручной сброс
+  // manual reset
   digitalWrite(RFM95_RST, LOW);
   delay(10);
   digitalWrite(RFM95_RST, HIGH);
@@ -33,40 +38,52 @@ void setup()
     Serial.println("setFrequency failed");
     while (1);
   }
-
+  
   rf95.setTxPower(18);
-  Serial.println("Receiver ready");
+  Serial.println("Receiver started. Waiting for messages...");
+  lastResetTime = millis(); // Инициализация таймера
 }
 
 void loop()
 {
-  if (rf95.available())
-  {
-    // Должен быть сообщение
+  // Проверка необходимости сброса счетчика
+  if (millis() - lastResetTime >= resetInterval) {
+    sendResetCommand();
+    lastResetTime = millis();
+  }
+  
+  // Проверка входящих сообщений
+  if (rf95.available()) {
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
     uint8_t len = sizeof(buf);
-
-    if (rf95.recv(buf, &len))
-    {
+    
+    if (rf95.recv(buf, &len)) {
       digitalWrite(LED, HIGH);
       
-      // Преобразуем полученные данные в строку
-      String receivedData = (char*)buf;
-      
-      // Выводим сырые данные в Serial (для Orange Pi)
-      Serial.println(receivedData);
-
-      // Также выводим в монитор порта для отладки
+      // Вывод полученного сообщения
       Serial.print("Received: ");
-      Serial.print(receivedData);
-      Serial.print(" with RSSI: ");
-      Serial.println(rf95.lastRssi(), DEC);
+      Serial.println((char*)buf);
+      
+      // Здесь можно добавить обработку полученных данных
       
       digitalWrite(LED, LOW);
     }
-    else
-    {
-      Serial.println("Receive failed");
-    }
   }
+  
+  delay(10); // Небольшая задержка для стабильности
+}
+
+void sendResetCommand() {
+  char command[] = "reset";
+  
+  Serial.print("Sending reset command: ");
+  Serial.println(command);
+  
+  rf95.send((uint8_t *)command, strlen(command) + 1);
+  rf95.waitPacketSent();
+  
+  // Мигание LED для индикации отправки
+  digitalWrite(LED, HIGH);
+  delay(100);
+  digitalWrite(LED, LOW);
 }
