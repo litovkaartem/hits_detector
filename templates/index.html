@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система мониторинга устройств | КГБ СССР</title>
+    <style>
+        :root {
+            --kgb-red: #CC0000;
+            --kgb-dark: #121212;
+            --kgb-medium: #222222;
+            --kgb-light: #333333;
+            --kgb-accent: #444444;
+            --text-primary: #F0F0F0;
+            --text-secondary: #AAAAAA;
+            --alert: #FF4444;
+            --gold: #FFD700;
+        }
+
+	.kgb-logo {
+	    width: 80px;
+            height: 80px;
+  	    margin-right: 20px;
+	    object-fit: contain;
+	    filter: sepia(100%) hue-rotate(-10deg) saturate(500%);
+	}        
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: var(--kgb-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(204, 0, 0, 0.1) 25%, rgba(204, 0, 0, 0.1) 26%, transparent 27%, transparent 74%, rgba(204, 0, 0, 0.1) 75%, rgba(204, 0, 0, 0.1) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(204, 0, 0, 0.1) 25%, rgba(204, 0, 0, 0.1) 26%, transparent 27%, transparent 74%, rgba(204, 0, 0, 0.1) 75%, rgba(204, 0, 0, 0.1) 76%, transparent 77%, transparent);
+            background-size: 40px 40px;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--kgb-red);
+            padding-bottom: 10px;
+        }
+        
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+            border: 1px dashed var(--kgb-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            margin: 0;
+            font-weight: normal;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 1.8rem;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px #000000;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        
+        .panel {
+            background-color: rgba(18, 18, 18, 0.95);
+            border: 1px solid var(--kgb-red);
+            border-radius: 0;
+            box-shadow: 0 0 20px rgba(204, 0, 0, 0.3);
+            margin: 0 auto;
+            max-width: 900px;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        
+        th {
+            background-color: var(--kgb-medium);
+            color: var(--gold);
+            padding: 12px 15px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--kgb-red);
+        }
+        
+        td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--kgb-light);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background-color: rgba(204, 0, 0, 0.1);
+        }
+        
+        .count {
+            font-weight: bold;
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        button {
+            background-color: var(--kgb-medium);
+            color: var(--text-primary);
+            border: 1px solid var(--kgb-red);
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background-color: var(--kgb-red);
+            color: white;
+        }
+        
+        .status-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .document-stamp {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 600px) {
+            .header-container {
+                flex-direction: column;
+            }
+            
+            .logo-placeholder {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header-container">
+        <img src="/static/USSR.svg" alt="USSR" class="kgb-logo">
+        <h1>ДЕТЕКТОР ПОПАДАНИЙ 3000 | ДП 3000</h1>
+    </div>
+    <div class="subtitle">Секретно. Для служебного пользования</div>
+    
+    <div class="panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Мишень №</th>
+                    <th>Попадания</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if counters %}
+                    {% for id, count in counters.items() %}
+                    <tr>
+                        <td>{{ id }}</td>
+                        <td class="count">{{ count }}</td>
+                        <td>
+                            <button onclick="resetCounter('{{ id }}')">Сбросить</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="status-message">Активные устройства не обнаружены</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="document-stamp">Программа №217/КГБ/СССР</div>
+
+    <script>
+        function resetCounter(deviceId) {
+            if(confirm("ПОДТВЕРДИТЕ СБРОС УСТРОЙСТВА\nИдентификатор: " + deviceId)) {
+                fetch('/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `device_id=${deviceId}`
+                }).then(response => {
+                    location.reload();
+                }).catch(error => {
+                    console.error('ОШИБКА ОПЕРАЦИИ:', error);
+                    alert("ОШИБКА! СООБЩЕНИЕ НЕ ДОСТАВЛЕНО");
+                });
+            }
+        }
+
+        // Auto-refresh with military time announcement
+        setTimeout(() => {
+            const now = new Date();
+            console.log(`СИСТЕМНОЕ ОБНОВЛЕНИЕ ${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')} МСК`);
+            location.reload();
+        }, 1000); // Обновление каждую секунду
+    </script>
+</body>
+</html>
